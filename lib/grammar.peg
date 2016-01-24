@@ -2,9 +2,14 @@ start
  = cmd:command ("#" .*)? { return cmd; }
 
 command
-  = primitive / property / canvas / newframe
+  = ignore / primitive / property / canvas / newframe 
   / bracket / float / emptyline
+// object:primitive  model:object ,  
 
+ignore = "//" [^\n]* { return { type: "ignore"}}
+ 
+keyframe = ":keyframe" ws ("\"" / "'") ws ident:([A-Z,a-z,0-9])+ ws ("\"" / "'") ws first:ufloat ws  { return  {type: "keyframe" , identity:ident.join("") , current_frame:first}; }
+ 
 emptyline = ws { return {}; }
 
 newframe = "newframe" { return  {type: "newframe"}; }
@@ -19,20 +24,20 @@ primitive = points / line_types / circles
 property = "set" ws property:(pointSize / color / lineWidth) { property.isProperty = true; return property; }
 
 line_types = line / polyline
-// draw separated lines
-line = ( ("line" wsc) / "lines" ) pts:(tupel)* { return { type: "lines", data: pts }; }
+// draw separated lines ws ?  ws ? , extention: (typeof temp === 'undefined') ? {type: "undefined"} : temp
+line = ( ("line" wsc) / "lines" ) pts:(tupel)* ws exten:keyframe ? ws { return { type: "lines", data: pts, extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
 // draw multiple connected lines
-polyline = "polyline" pts:(tupel)* { return { type: "polyline", data : pts }; }
+polyline = "polyline" pts:(tupel)* ws exten:keyframe ? ws  { return { type: "polyline", data : pts , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
 
 points
-  = ( ("point" wsc) / "points" ) pts:(tupel)* { return { type: "points", data: pts }; }
+  = ( ("point" wsc) / "points" ) pts:(tupel)* ws exten:keyframe ? ws { return { type: "points", data: pts , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
 
-circles = "circle" cs:(circle)* { return { type: "circles", data: cs }; }
+circles = "circle" cs:(circle)* ws exten:keyframe ? ws { return { type: "circles", data: cs , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
 circle = pos:tupel r:ufloat ws { return [pos,r]; }
 
-pointSize = "pointSize" ws size:ufloat { return { type: "pointSize", isProperty:true, data: size }; }
-lineWidth = "lineWidth" ws size:ufloat { return { type: "lineWidth", isProperty:true, data: [size] }; }
-color = "color" ws color:colorType { return { type: "color", isProperty:true, data: [color] }; }
+pointSize = "pointSize" ws size:ufloat ws exten:keyframe ? ws { return { type: "pointSize", isProperty:true, data: size , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
+lineWidth = "lineWidth" ws size:ufloat ws exten:keyframe ? ws { return { type: "lineWidth", isProperty:true, data: [size] , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
+color = "color" ws color:colorType ws exten:keyframe ? ws { return { type: "color", isProperty:true, data: [color] , extention: (typeof exten === 'undefined') ? {type: exten.type} : exten }; }
 
 tupel
  = ws first:float ws second:float ws { return {x: first, y: second }; }
@@ -58,3 +63,4 @@ ufloat
   = num:$(digits ( "." digits )? ( "e" digits)?) { return parseFloat(num); }
 
 digits = [0-9]+
+

@@ -13,7 +13,10 @@ describe("Parsing Commands", function(){
             data: [{
                 x: 1,
                 y: 2
-            }]
+            }],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(point[0]).should.deep.equal(point[1]);
@@ -26,7 +29,10 @@ describe("Parsing Commands", function(){
             data: [
               {x: 1,y: 2},
               {x: 3,y: 4}
-            ]
+            ],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(point[0]).should.deep.equal(point[1]);
@@ -39,7 +45,10 @@ describe("Parsing Commands", function(){
             data: [{
                 x: 10,
                 y: 0
-            }]
+            }],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
     parse(point[0]).should.deep.equal(point[1]);
   });
@@ -51,7 +60,10 @@ describe("Parsing Commands", function(){
             data: [{
                 x: -10,
                 y: -5
-            }]
+            }],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
     parse(point[0]).should.deep.equal(point[1]);
   });
@@ -62,7 +74,10 @@ describe("Parsing Commands", function(){
             type: "lines",
             data: [
               {x: -10,y: -5},
-              {x:10,y:10}]
+              {x:10,y:10}],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
     parse(line[0]).should.deep.equal(line[1]);
   });
@@ -75,7 +90,10 @@ describe("Parsing Commands", function(){
               {x:-10,y:-5},
               {x:10,y:10},
               {x:0,y:0},
-              {x:20,y:20}]
+              {x:20,y:20}],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
     parse(lines[0]).should.deep.equal(lines[1]);
   });
@@ -88,7 +106,10 @@ describe("Parsing Commands", function(){
               {x:-10,y:-5},
               {x:10,y:10},
               {x:0,y:0},
-              {x:20,y:20}]
+              {x:20,y:20}],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
     parse(polyline[0]).should.deep.equal(polyline[1]);
   });
@@ -100,7 +121,10 @@ describe("Parsing Commands", function(){
             data: [[{
                 x: 1,
                 y: 2
-            },5]]
+            },5]],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(circle[0]).should.deep.equal(circle[1]);
@@ -113,7 +137,10 @@ describe("Parsing Commands", function(){
             data: [
               [{x: 1,y: 2},5],
               [{x: 2,y: 2},10]
-            ]
+            ],
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(circles[0]).should.deep.equal(circles[1]);

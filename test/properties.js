@@ -10,7 +10,10 @@ describe("Parsing Commands", function(){
         {
             type:"pointSize",
             data: 7,
-            isProperty: true
+            isProperty: true,
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(property[0]).should.deep.equal(property[1]);
@@ -26,7 +29,10 @@ describe("Parsing Commands", function(){
         {
             type:"lineWidth",
             data: [7],
-            isProperty: true
+            isProperty: true,
+			extention:[{
+				type: "keyframe"
+			}]
         }];
 
     parse(property[0]).should.deep.equal(property[1]);
@@ -55,7 +61,10 @@ describe("Parsing Commands", function(){
         {
             type: "color",
             data: [c],
-            isProperty: true
+            isProperty: true,
+			extention:[{
+				type: "keyframe"
+			}]
         }];
         parse(property[0]).should.deep.equal(property[1]);
     });

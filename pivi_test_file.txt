@@ -1,0 +1,17 @@
+//Circles
+set color red
+circle 100 100 50
+set color green
+circle 100 100 20
+//Lines
+set color rgb 50 200 30 :keyframe "color1" 0
+lines (0 200) (200 0) :keyframe "line1" 0
+lines (0 0) (200 200) :keyframe "line2" 0
+set color rgb 150 50 130 :keyframe "color1" 3
+lines (0 0 ) (200 200) :keyframe "line1" 3
+lines (0 200 ) (200 0) :keyframe "line2" 3
+//Circles
+set color red
+circle 100 100 50
+set color green
+circle 100 100 20

@@ -1,0 +1,62 @@
+start
+ = cmd:command ("#" .*)? { return cmd; }
+
+command
+  = keyframe / primitive / property / canvas / newframe 
+  / bracket / float / emptyline
+
+emptyline = ws { return {}; }
+
+newframe = "newframe" { return  {type: "newframe"}; }
+
+canvas = "canvas" ws width:float ws height:float { return {type: "initialize", width: width, height: height}; }
+
+bracket
+ = "[" { return { type: "push" }; } / "]" { return { type: "pop" }; }
+
+primitive = points / line_types / circles
+
+property = "set" ws property:(pointSize / color / lineWidth) { property.isProperty = true; return property; }
+
+line_types = line / polyline
+// draw separated lines
+line = ( ("line" wsc) / "lines" ) pts:(tupel)*  { return { type: "lines", data: pts }; }
+// draw multiple connected lines
+polyline = "polyline" pts:(tupel)* { return { type: "polyline", data : pts }; }
+
+points
+  = ( ("point" wsc) / "points" ) pts:(tupel)* { return { type: "points", data: pts }; }
+
+circles = "circle" cs:(circle)* { return { type: "circles", data: cs }; }
+circle = pos:tupel r:ufloat ws { return [pos,r]; }
+
+pointSize = "pointSize" ws size:ufloat { return { type: "pointSize", isProperty:true, data: size }; }
+lineWidth = "lineWidth" ws size:ufloat { return { type: "lineWidth", isProperty:true, data: [size] }; }
+color = "color" ws color:colorType { return { type: "color", isProperty:true, data: [color] }; }
+
+tupel
+ = ws first:float ws second:float ws { return {x: first, y: second }; }
+
+colorType = color:(rgb / hexColor / name) { return color; }
+//colorType = color:name { return color; }
+
+rgb = "rgb" rgbColor:utupel3 { return rgbColor; }
+hexColor = "#" hexColor:([0-9,A-F,a-f]+) { return "#" + hexColor.join(""); }
+name = nameColor:([A-Z,a-z])+ { return nameColor.join(""); }
+
+utupel3
+ = ws first:ufloat ws second:ufloat ws third:ufloat ws { return {x: first, y: second, z: third }; }
+
+ws = wsc*
+wsc = ( "(" / " " / ")" / "," / [\t] )
+
+float
+  = num:$("-"? digits ( "." digits )? ( "e" digits)?) { return parseFloat(num); }
+
+// unsigned float for color, pointSize etc.
+ufloat
+  = num:$(digits ( "." digits )? ( "e" digits)?) { return parseFloat(num); }
+
+digits = [0-9]+
+
+keyframe = object:primitive "keyframe" ws ("\"" / "'") ws ident:([A-Z,a-z,0-9])+ ws ("\"" / "'") ws start:ufloat ws end:ufloat { return  {type: "keyframe" , data : [start,end,ident.join(""),object] }; }
